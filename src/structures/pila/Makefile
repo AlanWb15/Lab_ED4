@@ -5,7 +5,7 @@ source = $(wildcard *.c)
 source_o = $(wildcard *.o)
 output = ../../../lib/libPila.a
 
-build :
+build:
 	gcc $(cflags) $(source)
 	ar rcs $(output) $(source_o) $(outNodo)
 	@echo "Compilo Exitosamente!!!"

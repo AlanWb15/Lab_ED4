@@ -14,13 +14,6 @@ typedef struct
 	void (*liberar)(void *datoA);
 }ListaD;
 
-typedef struct
-{
-	NodoD *ante;
-	NodoD *enco;
-	void *dato;	
-}ResultadoD;
-
 //IMPLEMENTADAS
 void imprimirListaDIF(ListaD lista);
 void imprimirListaDFI(ListaD lista);

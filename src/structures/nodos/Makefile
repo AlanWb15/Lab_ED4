@@ -1,4 +1,4 @@
-cflags = -Wall -Werror -std=c99 -O2 -c
+cflags = -Wall -Werror -std=c99 -O2 -c -arch arm64
 source = $(wildcard *.c)
 
 

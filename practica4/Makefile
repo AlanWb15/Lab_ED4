@@ -1,9 +1,9 @@
 cflags = -Wall -Werror -std=c99 -O2 -arch arm64
 dflags = -Wall -Werror -std=c99 -g
-includes = -I ../iostring -I ../structures/lista -I ../structures/lista -I ../structures/listadoble -I ../structures/pila
-libs = ../../lib -liostring -lLista -lListaDoble
-source = $(wildcard *.c)
-output = ../../bin/test
+includes = -I ../iostring -I ../structures/nodos -I ../structures/pila
+libs = ../../lib -liostring -lPila 
+source = $(wildcard *.c) 
+output = ../../bin/practica4
 
 build :
 	gcc $(cflags) $(source) -o $(output) $(includes) -L $(libs)
@@ -11,8 +11,6 @@ build :
 rebuild:
 	make -C ..\iostring
 	make -C ..\structures\nodos
-	make -C ..\structures\lista
 	make -C ..\structures\pila
-	
 	gcc $(cflags) $(source) -o $(output) $(includes) -L $(libs)
 	@echo "Compilo Exitosamente!!!"

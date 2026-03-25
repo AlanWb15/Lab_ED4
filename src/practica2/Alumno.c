@@ -7,11 +7,8 @@ Alumno* crearAlumno(void)
 	inputCadena(" Nombre: ",nuevo->nombre,LEN);
 	inputEntero(" Semetres: ",&nuevo->semestre);
 	inputFloat(" Promedio: ",&nuevo->promedio);
-	return nuevo;
+	return nuevo;	
 }
-
-
-
 
 void imprimirAlumno(void *dato)
 {
@@ -52,4 +49,35 @@ int compararAlumno(void *datoA,void *datoB)
 {
 	return 0;
 }
+
+//funciones parar comparar mediante input, ya que las funciones de comparar comparan
+//un dato alumno con otro dato alumno
+// y queremos hacer que compare un dato con un alumno
+//se omite la de matricula por que funciona
+//se descubrio que funciona solo por que su apuntador 
+//y el apuntador a la estructura apuntan a lo mismo
+//solo por que es el primer miembro, solo por eso sirve
+int compararNombreInput(void *input, void *dato)
+{
+    char *nombreInput = input;
+    Alumno *alum = dato;
+    return strcmp(nombreInput, alum->nombre);
+}
+
+int compararSemestreInput(void *input, void *dato)
+{
+    int *semestreInput = input;
+    Alumno *alum = dato;
+
+    return *semestreInput - alum->semestre;
+}
+
+int compararPromedioInput(void *input, void *dato)
+{
+    float *promedioInput = input;
+    Alumno *alum = dato;
+
+    return *promedioInput - alum->promedio;
+}
+
 

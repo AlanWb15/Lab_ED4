@@ -1,7 +1,5 @@
 #include "listadoble.h"
 
-
-
 void insertarFinalD(ListaD *lista,void *dato)
 {
 	NodoD *nuevo = crearNodoD(dato);
