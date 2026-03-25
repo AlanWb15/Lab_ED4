@@ -1,9 +1,9 @@
 cflags = -Wall -Werror -std=c99 -O2 -arch arm64
 dflags = -Wall -Werror -std=c99 -g
-includes = -I ../iostring -I ../structures/pila
-libs = ../../lib -liostring -lPila
+includes = -I ../iostring -I ../structures/nodos -I ../structures/pila
+libs = ../../lib -liostring -lPila 
 source = $(wildcard *.c) 
-output = ../../bin/practica3
+output = ../../bin/practica6
 
 build :
 	gcc $(cflags) $(source) -o $(output) $(includes) -L $(libs)
