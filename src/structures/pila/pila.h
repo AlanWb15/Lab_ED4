@@ -13,6 +13,7 @@ typedef struct
 	void (*liberar)(void*);
 }Pila;
 
+void* peekPila(Pila pila);
 //VERIFICIACION
 int pilaVacia(Pila pila);
 int pilaLlena(Pila pila);
