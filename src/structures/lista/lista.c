@@ -9,7 +9,7 @@ void agregarFinal(Lista *lista,void *dato)
 	if( lista->inicio==NULL && lista->inicio==lista->fin)
 	{
 		//AGREGAR UNICO NODO
-		lista->inicio = lista->fin = nuevo;		
+		lista->inicio = lista->fin = nuevo;
 	}
 	//LISTA TIENE MINIMO UN NODO
 	else
@@ -23,9 +23,9 @@ void agregarFinal(Lista *lista,void *dato)
 }
 
 
-Resultado buscar(Lista lista,void *dato)
-{	
-	Resultado resultado = {NULL,NULL,NULL};
+ResultadoLista buscar(Lista lista,void *dato)
+{
+	ResultadoLista resultado = {NULL,NULL,NULL};
 	for (Nodo *q = NULL,*p = lista.inicio; p!= NULL ;q=p, p = p->sig)
 	{
 		if( lista.comparar(dato, p->dato) == 0)
@@ -42,9 +42,9 @@ Resultado buscar(Lista lista,void *dato)
 
 
 
-void imprimirResultado(Lista lista,Resultado res)
+void imprimirResultado(Lista lista,ResultadoLista res)
 {
-	
+
 	if( res.enco )
 	{
 		//ENCONTRADO
@@ -68,15 +68,15 @@ void agregarEnOrden(Lista *lista,void *dato)
 	Nodo *nuevo = crearNodo(dato);
 	//LISTA VACIA?
 	if ( !lista->inicio)
-	{	
+	{
 		lista->inicio = lista->fin = nuevo;
-	}	
+	}
 	//LISTA YA TIENE ALGO
 	else
 	{
 		for (Nodo *q = NULL,*aux = lista->inicio; aux!= NULL ;q=aux, aux = aux->sig)
 		{
-			
+
 			if( lista->comparar( nuevo->dato , aux->dato  ) < 0)
 			{
 				//REEMPLAZAR INICIO
@@ -98,16 +98,16 @@ void agregarEnOrden(Lista *lista,void *dato)
 				aux->sig = nuevo;
 				lista->fin = nuevo;
 				break;
-			}						
-		}			
-	}	
+			}
+		}
+	}
 	lista->cantidad++;
 }
 
 void imprimirLista(Lista lista)
 {
 	//SALIR DE LA FUNCION SI LA LISTA ESTA VACIA
-	printf("\n\n [%d] LISTA : \n",lista.cantidad); 
+	printf("\n\n [%d] LISTA : \n",lista.cantidad);
 	if(!lista.inicio)
 	{
 		printf(" VACIA\n");
@@ -122,7 +122,7 @@ void imprimirLista(Lista lista)
 		lista.imprimir( aux->dato );
 		//LA FUNCION SE ENCARGA DE DESREFERENCIAR
 		//LA DIRECCION DE TIPO VOID AL TIPO ESPECIFICO
-	}	
+	}
 	printf("\n");
 }
 
@@ -150,23 +150,23 @@ void eliminarInicio(Lista *lista)
 void eliminarFinal(Lista *lista)
 {
 	if(lista->inicio)
-	{	
-		Resultado res = buscar(*lista,lista->fin->dato);
+	{
+		ResultadoLista res = buscar(*lista,lista->fin->dato);
 		lista->fin = res.ante; //PENULTIMO
 		if(lista->fin)
 			lista->fin->sig = NULL;
-		else 
+		else
 			lista->inicio = NULL;
 		if(lista->liberar) lista->liberar(res.enco->dato);
 		free(res.enco); //FIN
 		lista->cantidad--;
-	}	
+	}
 }
 
 
 void eliminarDato(Lista *lista,void *dato)
 {
-	Resultado res = buscar(*lista,dato);
+	ResultadoLista res = buscar(*lista,dato);
 	if( res.enco)
 	{
 		if( res.enco == lista->inicio)
@@ -187,7 +187,7 @@ void eliminarDato(Lista *lista,void *dato)
 
 void insertarInicio(Lista * lista, void *dato)
 {
-	
+
 }
 
 int insertarEn(Lista * lista, void *dato, int index)
@@ -218,8 +218,8 @@ void reordenar(Lista *lista, int (*comparar)(void*,void*))
 	while( lista->cantidad  )
 	{
 		dato = removerInicio(lista);
-		agregarEnOrden(&aux,dato);		
+		agregarEnOrden(&aux,dato);
 	}
 	*lista = aux;
-	
+
 }

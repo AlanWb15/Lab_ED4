@@ -1,11 +1,10 @@
 cflags = -Wall -Werror -std=c99 -O2 -c -arch arm64
-dflags = -Wall -Werror-std=c99 -g
-sourceNodo = ../nodos/nodoarbol.o
+dflags = -Wall -Werror -std=c99 -g
 source = $(wildcard *.c)
 source_o = $(wildcard *.o)
-output = ../../../lib/libArbol.a
+output = ../../../lib/libHash.a
 
 build :
 	gcc $(cflags) $(source)
-	ar rcs $(output) $(source_o) $(sourceNodo)
+	ar rcs $(output) $(source_o)
 	@echo "Compilo Exitosamente!!!"

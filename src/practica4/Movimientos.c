@@ -16,7 +16,7 @@ Movimientos movimientosPosibles(Laberinto lab,Coordenada punto)
 	//IZQUIERDA
     if( lab[punto.x][punto.y-1] == '*' || lab[punto.x][punto.y-1] == 'B')
 		movimientos.left = 1;
-	return movimientos;	
+	return movimientos;
 }
 
 Movimientos regresosPosibles(Laberinto lab,Coordenada punto)
@@ -34,27 +34,30 @@ Movimientos regresosPosibles(Laberinto lab,Coordenada punto)
 	//IZQUIERDA
     if( lab[punto.x][punto.y-1] == '.')
 		movimientos.left = 1;
-	return movimientos;	
+	return movimientos;
 }
 
 void moverseEnLaberinto(Laberinto lab, Pila *movimientos)
 {
+
 	Coordenada *punto = movimientos->cima->dato;
 	Movimientos posibles = movimientosPosibles(lab, *punto);
-	
+
+
+
 	//MOVERSE ARRIBA
 	if(posibles.up == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
 		lab[punto->x][punto->y] = '.';
+
 		pushDato(movimientos, crearCoordenada(punto->x - 1,punto->y));
 	}
 	//MOVERSE ABAJO
 	else if(posibles.down == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[punto->x][punto->y] = '.';
 		pushDato(movimientos, crearCoordenada(punto->x + 1,punto->y));
 	}
@@ -62,7 +65,7 @@ void moverseEnLaberinto(Laberinto lab, Pila *movimientos)
 	else if(posibles.right == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[punto->x][punto->y] = '.';
 		pushDato(movimientos, crearCoordenada(punto->x,punto->y+1));
 	}
@@ -70,32 +73,32 @@ void moverseEnLaberinto(Laberinto lab, Pila *movimientos)
 	else if(posibles.left == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[punto->x][punto->y] = '.';
 		pushDato(movimientos, crearCoordenada(punto->x,punto->y-1));
 	}
-	
+
 }
 
 void atras(Laberinto lab,Pila *movimientos)
 {
 	Coordenada *anterior = movimientos->cima->dato;
 	Movimientos posibles = regresosPosibles(lab, *anterior);
-	
+
 	//MOVERSE ARRIBA
 	if(posibles.up == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[anterior->x][anterior->y] = ',';
 		free(popDato(movimientos));
-		
+
 	}
 	//MOVERSE ABAJO
 	else if(posibles.down == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[anterior->x][anterior->y] = ',';
 		free(popDato(movimientos));
 	}
@@ -103,7 +106,7 @@ void atras(Laberinto lab,Pila *movimientos)
 	else if(posibles.right == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[anterior->x][anterior->y] = ',';
 		free(popDato(movimientos));
 	}
@@ -111,14 +114,14 @@ void atras(Laberinto lab,Pila *movimientos)
 	else if(posibles.left == 1)
 	{
 		//imprimirMovimientos(posibles);
-		
+
 		lab[anterior->x][anterior->y] = ',';
 		free(popDato(movimientos));
 	}
 }
 
 void imprimirMovimientos(Movimientos movimientos)
-{	
+{
 	printf("\n");
 	//ARRIBA
 	if( movimientos.up == 1)
@@ -132,7 +135,7 @@ void imprimirMovimientos(Movimientos movimientos)
 	//IZQUIERDA
 	else if( movimientos.left == 1)
 		printf(" IZQUIERDA");
-	
+
 }
 
 int compararMovimientos(Movimientos a, Movimientos b)
@@ -143,8 +146,7 @@ int compararMovimientos(Movimientos a, Movimientos b)
 	   a.left == b.left)
 	   {
 		   return 1;
-	   }		   
-	   
+	   }
+
 	   return 0;
 }
-

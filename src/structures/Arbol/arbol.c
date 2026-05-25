@@ -1,16 +1,56 @@
 #include "arbol.h"
 
+Resultado buscarEnArbol(Arbol arbol, void *dato)
+{
+	Resultado result = {NULL, NULL, NULL, DERECHA};
+	NodoA *raiz = arbol.raiz;
+
+	while(raiz)
+	{
+		if(arbol.comparar(raiz->dato, dato)==0)
+		{
+			result.nodo =raiz;
+			result.dato=raiz->dato;
+			break;
+		}
+		else if(arbol.comparar(raiz->dato, dato)>0)
+		{
+			result.padre=raiz;
+			result.rama = IZQUIERDA;
+			raiz = raiz->izq;
+		}
+		else
+		{
+			result.padre=raiz;
+			result.rama = DERECHA;
+			raiz= raiz->dch;
+		}
+	}
+		return result;
+}
+
+void invertirRamas(NodoA *raiz)
+{
+	if(!raiz)
+		return;
+	NodoA *aux = raiz->izq;
+	raiz->izq = raiz-> dch;
+	raiz->dch = aux;
+	invertirRamas(raiz->izq);
+	invertirRamas(raiz->dch);
+}
+
 
 void insertarArbolOrdenado(NodoA *raiz,void *dato,int (*comparar)(void*,void*))
 {
 	if(comparar(dato,raiz->dato)<=0)
 	{
 		//IZQUIERDA
-		if(!raiz->izq)			
+		if(!raiz->izq)
 			raiz->izq = crearNodoA(dato);
-		else if(!raiz->dch && comparar(dato,raiz->dato)==0)			
+		else if(!raiz->dch && comparar(dato,raiz->dato)==0)
 			raiz->dch = crearNodoA(dato);
-		else			
+		else
 			insertarArbolOrdenado(raiz->izq,dato,comparar);
 	}
 	else
@@ -29,7 +69,7 @@ void insertarArbol(Arbol *arbol,void *dato)
 {
 	if(!arbol->raiz)
 		arbol->raiz = crearNodoA(dato);
-	else 
+	else
 		insertarArbolOrdenado(arbol->raiz,dato,arbol->comparar);
 	arbol->cantidad++;
 }
@@ -98,14 +138,14 @@ void orden(NodoA *raiz,void (*imprimir)(void*))
 	orden(raiz->izq,imprimir);
 	printf(" ");
 	imprimir(raiz->dato);
-	orden(raiz->dch,imprimir);	
+	orden(raiz->dch,imprimir);
 }
 
 void inverso(NodoA *raiz,void (*imprimir)(void*))
 {
 	if(!raiz)
 		return;
-	inverso(raiz->dch,imprimir);	
+	inverso(raiz->dch,imprimir);
 	printf(" ");
 	imprimir(raiz->dato);
 	inverso(raiz->izq,imprimir);
@@ -118,7 +158,7 @@ void postorden(NodoA *raiz,void (*imprimir)(void*))
 	postorden(raiz->izq,imprimir);
 	postorden(raiz->dch,imprimir);
 	printf(" ");
-	imprimir(raiz->dato);	
+	imprimir(raiz->dato);
 }
 
 
@@ -126,16 +166,16 @@ void imprimirOrden(Arbol arbol,int opcion)
 {
 	switch(opcion)
 	{
-		case PREORDEN: 
+		case PREORDEN:
 			preorden(arbol.raiz,arbol.imprimir);
 			break;
-		case ORDEN: 
+		case ORDEN:
 			orden(arbol.raiz,arbol.imprimir);
 			break;
-		case INVERSO: 
+		case INVERSO:
 			inverso(arbol.raiz,arbol.imprimir);
 			break;
-		case POSTORDEN: 
+		case POSTORDEN:
 			postorden(arbol.raiz,arbol.imprimir);
 			break;
 	}
@@ -162,277 +202,177 @@ void eliminarArbol(Arbol *arbol)
 	arbol->cantidad = 0;
 }
 
-void invertirRamas(NodoA *raiz)
+
+void eliminarDato(Arbol *arbol, void *dato)
+{
+		Resultado res = buscarEnArbol(*arbol, dato);//raiz
+		if(!res.nodo)
+			return;
+
+		NodoA *aux= res.nodo;
+		if(arbol->cantidad ==1 )
+		{
+		eliminarArbol(arbol);
+		return;
+		}
+
+	else if(!aux->izq || !aux->dch)
+	{
+		NodoA *hijo = aux->izq ? aux->izq : aux->dch;
+
+		if(!res.padre) // raíz
+			arbol->raiz = hijo;
+		else if(res.rama == IZQUIERDA)
+			res.padre->izq = hijo;
+		else
+			res.padre->dch = hijo;
+
+		arbol->liberar(aux->dato);
+
+	free(aux);
+	}
+	else
+	{
+		NodoA *padreSuc = aux;
+		NodoA *suc = aux->dch;
+
+		while(suc->izq)
+		{
+   			padreSuc = suc;
+    		suc = suc->izq;
+		}
+
+		aux->dato = suc->dato;
+
+		if(padreSuc->izq == suc)
+    		padreSuc->izq = suc->dch;
+		else
+    		padreSuc->dch = suc->dch;
+		free(suc);
+	}
+}
+
+
+int iguales(NodoA *a, NodoA *b, int (*comparar)(void*,void*))
+{
+	if(!a && !b) return 1;
+	if(!a || !b) return 0;
+
+	if(comparar(a->dato, b->dato) != 0)
+		return 0;
+
+	return iguales(a->izq, b->izq, comparar) &&
+	       iguales(a->dch, b->dch, comparar);
+}
+
+void llenarArray(NodoA *raiz, void **arr, int *i)
 {
 	if(!raiz)
 		return;
-	NodoA *aux = raiz->izq;
-	raiz->izq = raiz-> dch;
-	raiz->dch = aux;
-	invertirRamas(raiz->izq);
-	invertirRamas(raiz->dch);
-}
- 
-void invertir(Arbol *arbol)
-{
-	invertirRamas(arbol->raiz);	
+
+	llenarArray(raiz->izq, arr, i);
+	arr[*i] = raiz->dato;
+	(*i)++;
+	llenarArray(raiz->dch, arr, i);
 }
 
-
-Resultado buscarEnArbol(Arbol arbol, void *dato)
+int mismosDatos(Arbol arbolA, Arbol arbolB)
 {
-	Resultado result= {NULL, NULL, NULL, DERECHA};;
-	NodoA *raiz = arbol.raiz;
-	
-	while(raiz)
-	{
-
-		if(arbol.comparar(raiz->dato, dato) == 0)
-		{
-			result.nodo = raiz;
-			result.dato = result.nodo->dato;
-			if(result.padre && result.padre -> izq==raiz)
-				result.rama = IZQUIERDA;
-			else if(result.padre&&result.padre->dch==raiz)
-					result.rama=DERECHA;
-
-			break;
-		}
-		
-		else
-		{
-			result.padre=raiz;
-			 
-			if(arbol.comparar(raiz->dato, dato)>0)
-			{
-				raiz = raiz->izq;
-				
-			}
-			else
-			raiz = raiz->dch;
-	}
-}
-
-	return result;
-}
-//hacer imprimirEntero
-void imprimirEntero(void *dato)
-{
-	int data = *(int *)dato;
-	printf("%d", data);
-
-}
-
-void imprimirResultado(Resultado resultado, Arbol *arbol)
-{
-	if(resultado.nodo)
-	{
-		if(resultado.padre)
-		{
-			printf("\nPadre");
-			imprimirEntero(resultado.padre->dato);
-		}
-		printf("\n Nodo");
-		imprimirEntero(resultado.nodo->dato);
-		printf("\n RAMA %s", 
-				(resultado.rama) ? "DERECHA": "IZQUIERDA");
-		}
-	
-
-}
-
-
-void eliminarNodo(Arbol *arbol, void *dato)
-{
-	Resultado res = buscarEnArbol(*arbol, dato);
-
-	if (res.nodo == NULL)
-	{
-		printf("No se encontro nada de nada");
-		return;	
-	}
-
-	NodoA *nodo = res.nodo;
-	NodoA *padre = res.padre;
-	
-	//crear checks para ver si tienen hijos
-	int checkIzq = (nodo->izq != NULL);
-	int checkDch = (nodo->dch != NULL);
-	
-	//cuando no tiene hijos
-	if(!checkIzq && !checkDch)
-	{
-		if(padre==NULL)
-		{
-			arbol->raiz=NULL;
-		}
-		else if(res.rama==IZQUIERDA)
-			{
-				padre->izq=NULL;
-			}
-			else
-			{
-				padre->dch=NULL;
-			}
-		arbol->liberar(nodo->dato);
-    	free(nodo);
- 	    arbol->cantidad--;
-	}
-
-	
-	//cuando tiene 1 hijo
-	else if(checkIzq||checkDch)
-		{
-			NodoA *hijo = checkIzq ? nodo -> izq : nodo ->dch;
-			
-			if(padre == NULL)
-				arbol->raiz = hijo;
-
-			else if(res.rama == IZQUIERDA)
-					padre->izq = hijo;
-				
-				else
-					padre->dch = hijo;
-
-			arbol->liberar(nodo->dato);
-			free(nodo);
-			arbol->cantidad--;
-		}
-	//cuando tiene 2 o mas hijos;
-	else 
-		{
-			NodoA *sucesor = nodo->dch;
-			NodoA *padreSucesor = nodo;
-			
-			while(sucesor->izq!=NULL)
-			{
-					padreSucesor = sucesor;
-					sucesor = sucesor->izq;
-			}
-			nodo->dato = sucesor->dato;
-			
-			if(padreSucesor==nodo)
-				padreSucesor->dch = sucesor->dch;
-			else 
-				padreSucesor->izq = sucesor->dch;
-
-			free(sucesor);
-			arbol->cantidad--;
-					
-		}
-}			
-
-int altura(NodoA *nodo)
-{
-	//recorrer arbol desde raiz
-	if(!nodo)
-		return -1; //su profundidad es 0
-
-	int izq = altura(nodo->izq);
-	int dch = altura(nodo->dch);
-	
-	return (1 + (izq>dch ? izq : dch));
-}
-//profundidad, recursividad
-void profundidad(Arbol arbolA, Arbol arbolB)
-{
-    //aqui se tiene que iniciar la recursividad
-	printf("Profundidad de Arbol A: %d", altura(arbolA.raiz));
-	printf("Profundidad de Arbol B: %d", altura(arbolB.raiz));
-
-}
-
-//comparar arboles
-
-int compararNodos(NodoA *a, NodoA *b, int (*comparar)(void*, void*))
-{
-	//tope de recursion
-	if(!a && !b) //los dos toparon igual
-		return 1;
-	if(!a || !b) //toparon diferente
+	if(arbolA.cantidad != arbolB.cantidad)
 		return 0;
 
-	return (comparar( a->dato, b->dato) == 0 
-			&& compararNodos(a->izq, b->izq, comparar)
-			&& compararNodos(a->dch, b->dch, comparar));
+	void *arr1[arbolA.cantidad];
+	void *arr2[arbolB.cantidad];
 
-}
+	int i=0, j=0;
 
-int compararEstructura(NodoA *a, NodoA *b)
-{
-	//tope de recursion
-	if(!a && !b) //los dos toparon igual
-        return 1;
-    if(!a || !b) //toparon diferente
-        return 0;
+	llenarArray(arbolA.raiz, arr1, &i);
+	llenarArray(arbolB.raiz, arr2, &j);
 
-	return(compararEstructura(a->izq, b->izq) && compararEstructura(a->dch, b->dch));
+	for(int k=0; k<arbolA.cantidad; k++)
+	{
+		if(arbolA.comparar(arr1[k], arr2[k]) != 0)
+			return 0;
+	}
+	return 1;
 }
 
 void compararArboles(Arbol arbolA, Arbol arbolB)
 {
-	
-	int checkDatos = compararNodos(arbolA.raiz, arbolB.raiz, arbolA.comparar);
-	int checkEstr = compararEstructura(arbolA.raiz, arbolB.raiz);
-	
-	if(checkDatos && checkEstr)
-		printf("los dos son iguales\n");
-	else if(checkDatos)
-			printf("Mismos datos, diferente Estructura\n");
-		else
-			printf("No comparte ninguna similitud\n");
+	if(iguales(arbolA.raiz, arbolB.raiz, arbolA.comparar))
+	{
+		printf("\nSon IGUALES en estructura y datos");
+		return;
+	}
 
+	if(mismosDatos(arbolA, arbolB))
+	{
+		printf("\nTienen los mismos DATOS pero distinta estructura");
+		return;
+	}
+
+	printf("\nSon DIFERENTES");
 }
- 
-void ordenArr(NodoA *raiz, void **arreglo, int *indice)
+
+int altura(NodoA *raiz)
 {
 	if(!raiz)
-		return;
-	
-	ordenArr(raiz->izq, arreglo, indice);
-	arreglo[*indice] = raiz->dato;
+		return 0;
 
-	printf("%d", *(int*)arreglo[*indice]);
+	int izq = altura(raiz->izq);
+	int der = altura(raiz->dch);
 
-	(*indice)++;
-
-	ordenArr(raiz->dch, arreglo, indice);
-
+	return (izq > der ? izq : der) + 1;
 }
 
-void reordenar(Arbol *arbol, void **datos, int inicio, int fin)
+NodoA* construirBalanceado(void **arr, int ini, int fin)
 {
-	if(inicio>fin)
-		return;
-	int centro = (inicio + fin)/2;
-	insertarArbol(arbol, datos[centro]);
-	
-	//parte izq
-	reordenar(arbol, datos, inicio, centro -1);
-	//parte dch
-	reordenar(arbol, datos, centro +1, fin);
+	if(ini > fin)
+		return NULL;
+
+	int mid = (ini + fin) / 2;
+
+	NodoA *nuevo = crearNodoA(arr[mid]);
+
+	nuevo->izq = construirBalanceado(arr, ini, mid - 1);
+	nuevo->dch = construirBalanceado(arr, mid + 1, fin);
+
+	return nuevo;
 }
 
+void balancearArbol(Arbol *arbol)
+{
+	if(!arbol->raiz)
+		return;
 
-//equilibrar arbol
+	void *arr[arbol->cantidad];
+	int i = 0;
+
+	llenarArray(arbol->raiz, arr, &i);
+
+	eliminar_NodosA(arbol->raiz, NULL);
+
+	arbol->raiz = construirBalanceado(arr, 0, arbol->cantidad - 1);
+}
+
+void profundidad(Arbol arbolA, Arbol arbolB)
+{
+    int profA = altura(arbolA.raiz);
+    int profB = altura(arbolB.raiz);
+
+    printf("\nProfundidad Arbol A: %d", profA);
+    printf("\nProfundidad Arbol B: %d", profB);
+
+    if (profA > profB)
+        printf("\nEl Arbol A es mas profundo");
+    else if (profB > profA)
+        printf("\nEl Arbol B es mas profundo");
+    else
+        printf("\nAmbos arboles tienen la misma profundidad");
+}
+
 void equilibrar(Arbol *arbol)
 {
-	/*Paso 1: Guardar inorden en un arreglo
-	Paso 2: Reconstruir desde el centro
-	Paso 3: Reemplazar el árbol original*/
-	void **datos = malloc(arbol->cantidad *sizeof(void*));
-	int indice = 0;
-	ordenArr(arbol->raiz, datos, &indice);
-	
-	//PASO2
-	eliminar_NodosA(arbol->raiz, NULL);
-	arbol->raiz=NULL;
-	arbol->cantidad = 0;
-	
-	//PASO3
-	reordenar(arbol, datos, 0, indice -1);
-	
-	free(datos);
-
-	
+    balancearArbol(arbol);
+    printf("\nArbol equilibrado. Nueva profundidad: %d", altura(arbol->raiz));
 }

@@ -12,7 +12,7 @@
 Laberinto crear_laberinto(void)
 {
     int i,j;
-    char *tmp = 
+    char *tmp =
 "xxxxxxxxxxxxxxxxxxxxxxxxxx\
 xAx*****x****************x\
 x*xxx*x*x*xxxxxxxxx*xxxx*x\
@@ -41,16 +41,16 @@ x***x***x***x*xxxxxxxxxx*x\
 x*x***x***x*************Bx\
 xxxxxxxxxxxxxxxxxxxxxxxxxx\0";
 
- 
-    
+
+
     Laberinto lab;
     lab = (unsigned char**) malloc(sizeof(unsigned char *)*REN);
-    
+
     for(i=0;i<REN;i++)
     {
         lab[i] = (unsigned char*) malloc(sizeof(unsigned char)*COL);
     }
-    
+
     for(i=0;i<REN;i++)
     {
         //printf("\n\r");
@@ -58,7 +58,7 @@ xxxxxxxxxxxxxxxxxxxxxxxxxx\0";
         {
             //printf("%c",tmp[(i*COL)+j]);
             lab[i][j] = tmp[(i*COL)+j];
-        }   
+        }
     }
     return lab;
 }
@@ -74,14 +74,21 @@ void liberarLaberinto(Laberinto lab)
 void imprimirLab(Laberinto lab)
 {
 	int i,j;
+
 	for(i=0;i<REN;i++)
     {
         printf("\n\r");
         for(j=0;j<COL;j++)
         {
-            if(lab[i][j]=='*')printf("  ");
+            if(i==1 && j==1)
+            {
+                printf("A");
+            }else{
+                if(lab[i][j]=='*')printf("  ");
 			else printf("%c ",lab[i][j]);
-        }   
+            }
+
+        }
     }
 }
 
@@ -94,9 +101,9 @@ void setAoB(Laberinto lab,Coordenada punto,char caracter)
         {
 			if(lab[i][j]==caracter)
 				lab[i][j]='*';
-			if(i == punto.x && j== punto.y)				
+			if(i == punto.x && j== punto.y)
 				lab[i][j]=caracter;
-        }   
+        }
     }
 }
 

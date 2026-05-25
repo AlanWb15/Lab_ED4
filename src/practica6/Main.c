@@ -3,16 +3,19 @@
 #include <pila.h>
 #include <iostring.h>
 #include <string.h>
+
+#define MAX 256
+
 void insertar(char arr[]);
 int verificarParentesis(char *cadena);
 int precedencias(char c);
-void pasar( char posfix[], char infix[], Pila pila);
+void pasar( char posfix[], char infix[], Pila *pila);
 void imprimirCad(char arr[]);
 int main(void)
 {
-	Pila pila = {NULL, 0, -1, NULL, free};
-	char infix [100];
-	char posfix [100];
+	Pila pila = {NULL, 0, 100, NULL, free};
+	char infix [MAX];
+	char posfix [MAX];
     int opc;
     do{
         printf("CONVERSION DE INFIX A POSTFIX\n");
@@ -26,14 +29,14 @@ int main(void)
         {
         case 1:
             insertar(infix);
-                        pasar(posfix, infix, pila);
+                        pasar(posfix, infix, &pila);
                                     imprimirCad(posfix);
             break;
         case 2:
             printf("bye");
             break;
         }
-    } while (opc != 0);
+    } while (opc != 2);
 	printf("\n\n FIN DE PROGRAMA\n\n");
 	return 0;
 }
@@ -44,7 +47,9 @@ void insertar(char arr[])
 	while (!check)
 	{
 		printf("Ingrese la cadena: ");
-		fgets(arr, 100, stdin);
+		fgets(arr, MAX, stdin);
+		arr[strcspn(arr, "\n")] = '\0';
+
 		if (verificarParentesis(arr) == 0)
 			printf("Input incorrecto, intente de nuevo\n");
 		else
@@ -54,9 +59,12 @@ void insertar(char arr[])
 	return;
 }
 //pasar a posfix
-void pasar( char posfix[], char infix[], Pila pila)
+void pasar( char posfix[], char infix[], Pila *pila)
 {
 	int i = 0, j = 0, top = 0;
+
+	vaciarPila(pila);
+
 	while (infix[i] != '\0' && infix[i] != '\n')
 	{
 		if (infix[i] != ' ' && infix[i] != 0)
@@ -68,36 +76,36 @@ void pasar( char posfix[], char infix[], Pila pila)
                 j++;
             }else if (top == 4)
 			{
-				pushDato(&pila, &infix[i]);
+				pushDato(pila, &infix[i]);
 			}
 			else if (top == 5)
 			{
-				while(pila.cima && precedencias(*(char*)pila.cima->dato) != 4)
+				while(pila->cima && precedencias(*(char*)pila->cima->dato) != 4)
 				{
-					posfix[j] = *(char*)popDato(&pila);
+					posfix[j] = *(char*)popDato(pila);
 					j++;
 						
 				}
-                popDato(&pila);
+                popDato(pila);
 			}
 			else if(top != 0)
 			{
-				while(pila.cima && precedencias(*(char*)pila.cima->dato) >= top && precedencias(*(char*)pila.cima->dato) != 4)
+				while(pila->cima && precedencias(*(char*)pila->cima->dato) >= top && precedencias(*(char*)pila->cima->dato) != 4)
 				{
 
-                        posfix[j] = *(char*)popDato(&pila);
+                        posfix[j] = *(char*)popDato(pila);
                         j++;
 				}
-                pushDato(&pila, &infix[i]);
+                pushDato(pila, &infix[i]);
 
 			}
 		}
 		i++;
 	}
 
-	while(pila.cima)
+	while(pila->cima)
 	{
-		posfix[j] = *(char*)popDato(&pila);
+		posfix[j] = *(char*)popDato(pila);
 		j++;
 	}
 	posfix[j] = '\0';
@@ -105,7 +113,7 @@ void pasar( char posfix[], char infix[], Pila pila)
 //verificar que se cierren los parentesis
 int verificarParentesis(char *cadena)
 {
-	Pila pila = {NULL, -1, 0, NULL, NULL};
+	Pila pila = {NULL, 0, 100, NULL, NULL};
 	char *ptr;
 	char *dato;
 	ptr = cadena;

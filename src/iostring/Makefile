@@ -5,6 +5,6 @@ source_o = $(wildcard *.o)
 output = ../../lib/libiostring.a
 
 build :
-	gcc $(cflags) $(source) 
-	ar rcs $(output) $(source_o) 
+	gcc $(cflags) $(source)
+	ar rcs $(output) $(source_o)
 	@echo "Compilo Exitosamente!!!"

@@ -22,11 +22,11 @@ typedef struct
 {
 	Nodo *ante;
 	Nodo *enco;
-	void *dato;	
-}Resultado;
+	void *dato;
+}ResultadoLista;
 
-Resultado buscar(Lista lista,void *dato);
-void imprimirResultado(Lista lista,Resultado resultado);
+ResultadoLista buscar(Lista lista,void *dato);
+void imprimirResultado(Lista lista,ResultadoLista resultado);
 void imprimirLista(Lista lista);
 
 //INSERTAR AGREGAR

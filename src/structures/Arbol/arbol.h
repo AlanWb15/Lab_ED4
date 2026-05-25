@@ -28,22 +28,18 @@ typedef struct
 	void (*liberar)(void*);
 }Arbol;
 
-void invertirArbol(Arbol *arbol);
-void invertirRama(NodoA *raiz);
+
 void eliminarArbol(Arbol *arbol);
+void eliminarDato(Arbol *arbol, void *dato);
 void insertarArbol(Arbol *arbol,void *dato);
 void imprimirArbol(Arbol arbol);
 void imprimirOrden(Arbol arbol,int opcion);
-void eliminarNodo(Arbol *arbol, void *dato);
-void imprimirResultado(Resultado resultado, Arbol *arbol);
-void imprimirEntero(void *dato);
-int altura(NodoA *nodo);
-void profundidad(Arbol arbolA, Arbol arbolB);
-int compararNodos(NodoA *a, NodoA *b, int (*comparar)(void*, void*));
-int  compararEstructura(NodoA *a, NodoA *b);
+Resultado buscarEnArbol(Arbol arbol, void *dato);
+int altura(NodoA *raiz);
+void invertirRamas(NodoA *raiz);
 void compararArboles(Arbol arbolA, Arbol arbolB);
-void ordenArr(NodoA *raiz, void **arreglo, int *indice);
-void reordenar(Arbol *arbol, void **datos, int inicio, int fin);
+void balancearArbol(Arbol *arbol);
+void profundidad(Arbol arbolA, Arbol arbolB);
 void equilibrar(Arbol *arbol);
 
 #endif
